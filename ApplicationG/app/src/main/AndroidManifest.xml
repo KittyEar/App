@@ -31,6 +31,8 @@
                     android:name="android.appwidget.provider"
                     android:resource="@xml/my_app_widget_info" />
         </receiver>
+        <service android:name=".LongRunningService"/>
+        <receiver android:name=".AlarmReceiver"/>
     </application>
 
 </manifest>

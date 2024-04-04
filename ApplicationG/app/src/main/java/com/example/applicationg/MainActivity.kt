@@ -1,5 +1,6 @@
 package com.example.applicationg
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -34,6 +35,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting() {
+
     var ganZhiDateTime by remember { mutableStateOf(MyAppWidget().dealFontColor(MyAppWidget().getGanZhiDateTime())) }
 
     Box(

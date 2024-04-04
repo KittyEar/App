@@ -1,8 +1,8 @@
-package com.example.controller;
+package com.example.mytaskmanager.controller;
 
-import com.example.data.User;
-import com.example.data.UserDto;
-import com.example.service.UserService;
+import com.example.mytaskmanager.data.User;
+import com.example.mytaskmanager.data.UserDto;
+import com.example.mytaskmanager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     @Autowired
     private UserService userService;
-    @CrossOrigin(origins = "*") // 允许所有域
+    //@CrossOrigin(origins = "*") // 允许所有域
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserDto userDto) {
         // 检查用户名是否已存在
@@ -28,24 +28,22 @@ public class AuthController {
 
         return ResponseEntity.ok("User registered successfully.");
     }
-    @ResponseBody
-    @CrossOrigin(origins = "*") // 允许所有域
-    @GetMapping("/login")
-    public String login() {
+    //@CrossOrigin(origins = "*") // 允许所有域
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody UserDto userDto) {
         // 检查用户是否存在
-//        User user = userService.getUserByUsername(userDto.getUsername());
-//        if (user == null) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                    .body("Invalid username or password.");
-//        }
-//
-//        // 检查密码是否匹配
-//        if (!user.getPassword().equals(userDto.getPassword())) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                    .body("Invalid username or password.");
-//        }
-//
-//        return ResponseEntity.ok("Login successful.");
-        return "hello";
+        User user = userService.getUserByUsername(userDto.getUsername());
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid username or password.");
+        }
+
+        // 检查密码是否匹配
+        if (!user.getPassword().equals(userDto.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid username or password.");
+        }
+
+        return ResponseEntity.ok("Login successful.");
     }
 }
