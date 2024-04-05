@@ -34,5 +34,5 @@
         <service android:name=".LongRunningService"/>
         <receiver android:name=".AlarmReceiver"/>
     </application>
-
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" tools:ignore="ManifestOrder"/>
 </manifest>

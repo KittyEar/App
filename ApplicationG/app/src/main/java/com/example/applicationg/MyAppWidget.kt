@@ -12,14 +12,17 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
 import androidx.glance.GlanceModifier
 import androidx.glance.action.clickable
+import androidx.glance.appwidget.state.updateAppWidgetState
 
 import androidx.glance.layout.*
 import androidx.glance.state.GlanceStateDefinition
+import androidx.glance.state.PreferencesGlanceStateDefinition
 import androidx.glance.text.FontFamily
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
@@ -28,6 +31,7 @@ import androidx.glance.unit.ColorProvider
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.hothub.calendarist.Calendarist
 import org.hothub.calendarist.pojo.CycleDate
 import org.hothub.calendarist.pojo.SolarDate
@@ -36,20 +40,30 @@ import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+// 定义一个 StateFlow 来保存状态
+val ganZhiDateTimeState = MutableStateFlow("")
+
 class MyAppWidget : GlanceAppWidget() {
+
+    override val stateDefinition = PreferencesGlanceStateDefinition
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
 
         provideContent {
             // create your AppWidget here
-            myContent(context)
+            myContent(context, id)
         }
 
     }
     @Composable
-    private fun myContent(context: Context) {
+    private fun myContent(context: Context, id: GlanceId) {
         val context1 = context
-        val ganZhiDateTime = remember { mutableStateOf(getGanZhiDateTime()) }
+        //val ganZhiDateTime = remember { mutableStateOf(getGanZhiDateTime()) }
+        // 观察状态以更新 UI
+        val ganZhiDateTime = ganZhiDateTimeState.collectAsState()
+        // 读取状态
+
+        //val ganZhiDateTime = rememberUpdatedState(getGanZhiDateTime())
 
 //        // 设置每隔奇数小时执行
 //        LaunchedEffect(id) {
@@ -72,7 +86,7 @@ class MyAppWidget : GlanceAppWidget() {
 //            }
 //        }
         Column(
-            modifier = GlanceModifier.fillMaxSize().clickable { ganZhiDateTime.value = getGanZhiDateTime()},
+            modifier = GlanceModifier.fillMaxSize().clickable { ganZhiDateTime.value },
             verticalAlignment = Alignment.Top,
             horizontalAlignment = Alignment.Start,
         ) {
@@ -102,7 +116,7 @@ class MyAppWidget : GlanceAppWidget() {
         val cycleDate: CycleDate = calendarist.toCycle()
 
 
-        return dealString(cycleDate)
+        return dealString(cycleDate) + second
     }
     private fun countTime() : Long{
         val currentTime = LocalDateTime.now()

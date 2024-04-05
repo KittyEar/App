@@ -16,10 +16,7 @@ class MyAppWidgetReceiver : GlanceAppWidgetReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
 
-        val dataSyncWorkRequest = PeriodicWorkRequestBuilder<DataSyncWorker>(
-            repeatInterval = 15L,
-            repeatIntervalTimeUnit = TimeUnit.MINUTES
-        )
+        val dataSyncWorkRequest = OneTimeWorkRequestBuilder<DataSyncWorker>()
             .addTag("timer-update")
             .build()
 
